@@ -2,17 +2,15 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.app.Application;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.clj.fastble.BleManager;
-import com.example.myapplication.utils.BleTool;
+import com.example.myapplication.utils.BluetoothTool.BluetoothTool;
 
 public class BleActivity extends AppCompatActivity {
     @Override
@@ -21,11 +19,9 @@ public class BleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ble);
         Application application = this.getApplication();
         BleManager.getInstance().init(getApplication());
-        BleManager.getInstance()
-                .enableLog(true)
-                .setReConnectCount(1, 5000)
-                .setOperateTimeout(5000);
         Button btnConnect = (Button) findViewById(R.id.startConnect);
+        Button check = findViewById(R.id.check);
+        BluetoothTool bluetoothTool = new BluetoothTool(this);
         btnConnect.setOnClickListener(view->{
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -38,8 +34,13 @@ public class BleActivity extends AppCompatActivity {
                     }
                 }
             }
-            BleTool bleTool = new BleTool(application,"Water");
-            bleTool.scan();
+            bluetoothTool.startSearch();
+            bluetoothTool.openBluetooth();
+            bluetoothTool.startService();
+        });
+        check.setOnClickListener(x->{
+            System.out.println(bluetoothTool.checkAlreadyConnect());
+            System.out.println(bluetoothTool.getDeviceSet());
         });
 
     }

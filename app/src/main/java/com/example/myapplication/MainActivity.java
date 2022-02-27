@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         btn_map = findViewById(R.id.btn_map);
         Button btnBle = findViewById(R.id.btn_ble);
         btn_map.setOnClickListener(new View.OnClickListener() {
