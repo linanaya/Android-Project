@@ -55,6 +55,7 @@ public class ClientThread implements Runnable {
 
         try {
             socket.connect();
+            System.out.println("设备"+socket.getRemoteDevice().getName()+"连接成功");
             out = socket.getOutputStream();
             in = socket.getInputStream();
             new Thread(new Runnable() {
@@ -75,7 +76,7 @@ public class ClientThread implements Runnable {
                 }
             }).start();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("设备"+socket.getRemoteDevice().getName()+"连接失败");
             Log.e(TAG, "-------------- exception");
         }
     }

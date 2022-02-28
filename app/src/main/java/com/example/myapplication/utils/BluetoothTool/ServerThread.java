@@ -73,20 +73,17 @@ public class ServerThread implements Runnable {
                             }
                         }
                     }).start();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity.getApplication(), "开始发送数据", Toast.LENGTH_LONG).show();
-                            for (int i = 0; i < 100; i++) {
-                                try {
-                                    Thread.sleep(10000);
-                                    write("成功发送数据"+i);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+                    new Thread(()->{
+                        for (int i = 0; i < 100; i++) {
+                            try {
+                                Thread.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
+                            write("发送数据"+i);
                         }
-                    });
+                    }).start();
+                    serverSocket.close();
                     break;
                 }
             }// end while(true)
