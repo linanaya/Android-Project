@@ -31,8 +31,9 @@ public class ServerThread implements Runnable {
     BufferedReader reader;
 
     boolean acceptFlag = true;
-
-    public ServerThread(BluetoothAdapter bluetoothAdapter) {
+    Activity activity;
+    public ServerThread(BluetoothAdapter bluetoothAdapter,Activity activity) {
+        this.activity = activity;
         this.bluetoothAdapter = bluetoothAdapter;
         BluetoothServerSocket tmp = null;
         try {
@@ -51,6 +52,7 @@ public class ServerThread implements Runnable {
                 socket = serverSocket.accept();
                 // 阻塞，直到有客户端连接
                 if (socket != null) {
+                    Toast.makeText(activity.getApplication(), "服务器被连接成功", Toast.LENGTH_LONG).show();
                     out = socket.getOutputStream();
                     in = socket.getInputStream();
                     BluetoothDevice remoteDevice = socket.getRemoteDevice();
@@ -71,6 +73,20 @@ public class ServerThread implements Runnable {
                             }
                         }
                     }).start();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity.getApplication(), "开始发送数据", Toast.LENGTH_LONG).show();
+                            for (int i = 0; i < 100; i++) {
+                                try {
+                                    Thread.sleep(10000);
+                                    write("成功发送数据"+i);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
                     break;
                 }
             }// end while(true)

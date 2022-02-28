@@ -36,7 +36,6 @@ public class BleActivity extends AppCompatActivity {
             }
             bluetoothTool.startSearch();
             bluetoothTool.openBluetooth();
-            bluetoothTool.startService();
         });
         check.setOnClickListener(x->{
             System.out.println(bluetoothTool.checkAlreadyConnect());

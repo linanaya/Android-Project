@@ -9,9 +9,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
+import android.os.ParcelUuid;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
+
+import com.example.myapplication.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +61,9 @@ public class BluetoothTool {
             serverThread.cancel();
         }
         deviceSet.forEach(x->{
+            for (ParcelUuid uuid : x.getUuids()) {
+                System.out.println("要连接的设备uuid为"+uuid.toString());
+            }
             ClientThread clientThread = new ClientThread(bluetoothAdapter, x);
             new Thread(clientThread).start();
         });
@@ -66,8 +72,8 @@ public class BluetoothTool {
         if (serverThread!=null){
             serverThread.cancel();
         }
-        serverThread = new ServerThread(bluetoothAdapter);
-        new Thread(new ServerThread(bluetoothAdapter)).start();
+       serverThread = new ServerThread(bluetoothAdapter,activity);
+        new Thread(serverThread).start();
     }
     public void startSearch(){
         intentFilter = new IntentFilter();
@@ -87,12 +93,13 @@ public class BluetoothTool {
                 System.out.println("开始搜索");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 System.out.println("搜索结束");
-                textView.setText(deviceSet.toString());
-                bluetoothAdapter.cancelDiscovery();
+                connectDevice();
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 System.out.println(device.getName()+" "+ device.getAddress()+" "+device.getUuids());
-                deviceSet.add(device);
+                if (device.getName()!=null&&device.getName().contains("哈哈哈")){
+                    deviceSet.add(device);
+                }
             }
         }
     }
