@@ -39,6 +39,7 @@ public class BluetoothTool {
             activity.startActivityForResult(enableBtIntent,Params.REQUEST_ENABLE_BT);
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public List<BluetoothDevice> checkAlreadyConnect() {
         List<BluetoothDevice> list = new ArrayList<BluetoothDevice>();
         boolean flag = false;
@@ -47,7 +48,7 @@ public class BluetoothTool {
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 list.add(device);
-                System.out.println(device.getName()+"\n"+ device.getAddress());
+                deviceSet.add(device);
             }
         }
         return list;
@@ -87,12 +88,13 @@ public class BluetoothTool {
                 System.out.println("开始搜索");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 System.out.println("搜索结束");
-                textView.setText(deviceSet.toString());
                 bluetoothAdapter.cancelDiscovery();
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 System.out.println(device.getName()+" "+ device.getAddress()+" "+device.getUuids());
-                deviceSet.add(device);
+                if (device.getName()!=null){
+                    deviceSet.add(device);
+                }
             }
         }
     }

@@ -51,6 +51,7 @@ public class ServerThread implements Runnable {
                 socket = serverSocket.accept();
                 // 阻塞，直到有客户端连接
                 if (socket != null) {
+                    System.out.println("服务器搜索到设备开始连接");
                     out = socket.getOutputStream();
                     in = socket.getInputStream();
                     BluetoothDevice remoteDevice = socket.getRemoteDevice();
@@ -71,6 +72,17 @@ public class ServerThread implements Runnable {
                             }
                         }
                     }).start();
+                    new Thread(()->{
+                        for (int i = 0; i < 100; i++) {
+                            try {
+                                Thread.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            write("发送数据"+i);
+                        }
+                    }).start();
+                    serverSocket.close();
                     break;
                 }
             }// end while(true)
