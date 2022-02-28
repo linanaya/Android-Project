@@ -33,11 +33,9 @@ public class ClientThread implements Runnable {
     OutputStream out;
     InputStream in;
     BufferedReader reader;
-    public ClientThread(BluetoothAdapter bluetoothAdapter, BluetoothDevice device,
-                        Handler handler) {
+    public ClientThread(BluetoothAdapter bluetoothAdapter, BluetoothDevice device) {
         this.bluetoothAdapter = bluetoothAdapter;
         this.device = device;
-        this.uiHandler = handler;
         BluetoothSocket tmp = null;
         try {
             tmp = device.createRfcommSocketToServiceRecord(UUID.fromString(Params.UUID));
@@ -63,17 +61,12 @@ public class ClientThread implements Runnable {
                 @Override
                 public void run() {
                     Log.e(TAG, "-----------do client read run()");
-
                     byte[] buffer = new byte[1024];
                     int len;
                     String content;
                     try {
                         while ((len=in.read(buffer)) != -1) {
                             content=new String(buffer, 0, len);
-                            Message message = new Message();
-                            message.what = Params.MSG_CLIENT_REV_NEW;
-                            message.obj = content;
-                            uiHandler.sendMessage(message);
                             Log.e(TAG, "------------- client read data in while ,send msg ui" + content);
                         }
                     } catch (IOException e) {

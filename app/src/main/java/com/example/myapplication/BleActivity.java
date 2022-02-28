@@ -21,7 +21,7 @@ public class BleActivity extends AppCompatActivity {
         BleManager.getInstance().init(getApplication());
         Button btnConnect = (Button) findViewById(R.id.startConnect);
         Button check = findViewById(R.id.check);
-        BluetoothTool bluetoothTool = new BluetoothTool(this);
+        BluetoothTool bluetoothTool = new BluetoothTool(this,findViewById(R.id.textView));
         btnConnect.setOnClickListener(view->{
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE

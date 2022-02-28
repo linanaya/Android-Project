@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Handler;
+import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
@@ -25,7 +27,8 @@ public class BluetoothTool {
     ClientThread clientThread;
     Set<BluetoothDevice> deviceSet = new HashSet<>();
     IntentFilter intentFilter;
-    public BluetoothTool(Activity activity){
+    TextView textView;
+    public BluetoothTool(Activity activity,TextView textView){
         this.activity = activity;
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         btReceiver = new MyBtReceiver();
@@ -49,12 +52,15 @@ public class BluetoothTool {
         }
         return list;
     }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void connectDevice(){
         if (serverThread!=null){
             serverThread.cancel();
         }
-
-
+        deviceSet.forEach(x->{
+            ClientThread clientThread = new ClientThread(bluetoothAdapter, x);
+            new Thread(clientThread).start();
+        });
     }
     public void startService(){
         if (serverThread!=null){
@@ -81,6 +87,7 @@ public class BluetoothTool {
                 System.out.println("开始搜索");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 System.out.println("搜索结束");
+                textView.setText(deviceSet.toString());
                 bluetoothAdapter.cancelDiscovery();
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -89,7 +96,6 @@ public class BluetoothTool {
             }
         }
     }
-
     public Set<BluetoothDevice> getDeviceSet() {
         return deviceSet;
     }
